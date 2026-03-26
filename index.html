@@ -1,235 +1,436 @@
 <!DOCTYPE html>
-<html>
-<head>
-<title>Password Security Analyzer</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Password strength checker with entropy calculation and security analysis.">
-<meta name="google-site-verification" content="kPZRr8NWxGEOrdkUn49XXm15z4igLp8bwdEzcajzffc" />
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Password Security Analyzer</title>
+
+<meta name="description" content="Advanced Password Strength Analyzer with entropy calculation and risk analysis">
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<meta name="google-site-verification" content="...">
 
 <style>
-body {
-    margin: 0;
-    font-family: 'Courier New', monospace;
-    background: linear-gradient(135deg, #000000, #0f2027, #000000);
-    background-size: 400% 400%;
-    animation: bgAnimation 15s infinite alternate;
-    color: #00ffcc;
-    text-align: center;
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
-@keyframes bgAnimation {
-    0% { background-position: left; }
-    100% { background-position: right; }
+body{
+
+font-family:'Poppins',sans-serif;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+
+/* darker background */
+
+background:
+radial-gradient(circle at top,#050509,#000000 70%),
+linear-gradient(135deg,#000000,#050510,#000000);
+
+color:#9d4edd;
+overflow:hidden;
+
 }
 
-.container {
-    margin-top: 80px;
+/* subtle animated grid */
+
+body::before{
+
+content:"";
+position:absolute;
+width:200%;
+height:200%;
+
+background:
+radial-gradient(circle,#3a0ca3 2px,transparent 2px);
+
+background-size:45px 45px;
+
+animation:moveBg 30s linear infinite;
+
+opacity:0.05;
+
 }
 
-.card {
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(10px);
-    width: 500px;
-    max-width: 90%;
-    margin: auto;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 0 30px #00ffcc;
+@keyframes moveBg{
+
+from{transform:translate(0,0);}
+to{transform:translate(-200px,-200px);}
+
 }
 
-h1 {
-    text-shadow: 0 0 15px #00ffcc;
-    letter-spacing: 2px;
+/* main card */
+
+.container{
+
+width:450px;
+max-width:95%;
+padding:35px;
+
+background:rgba(0,0,0,0.75);
+backdrop-filter:blur(12px);
+
+border-radius:20px;
+
+box-shadow:
+0 0 25px rgba(157,78,221,0.35),
+inset 0 0 10px rgba(0,170,255,0.2);
+
+border:1px solid rgba(157,78,221,0.4);
+
+text-align:center;
+
 }
 
-.password-wrapper {
-    position: relative;
-    width: 100%;
-    margin-top: 20px;
+/* title */
+
+h1{
+
+font-family:'Orbitron',sans-serif;
+letter-spacing:3px;
+margin-bottom:25px;
+
+color:#9d4edd;
+
+text-shadow:0 0 10px rgba(157,78,221,0.8);
+
 }
 
-.password-wrapper input {
-    width: 100%;
-    padding: 12px;
-    padding-right: 45px;
-    background: black;
-    color: #00ffcc;
-    border: 2px solid #00ffcc;
-    border-radius: 5px;
-    font-size: 15px;
+/* password box */
+
+.password-wrapper{
+
+position:relative;
+margin-top:15px;
+
 }
 
-.toggle {
-    position: absolute;
-    right: 12px;
-    top: 12px;
-    cursor: pointer;
-    font-size: 18px;
-    color: #00ffcc;
+.password-wrapper input{
+
+width:100%;
+padding:12px 45px 12px 15px;
+
+border-radius:8px;
+border:2px solid #9d4edd;
+
+background:black;
+color:#9d4edd;
+
+font-size:15px;
+
+outline:none;
+transition:0.3s;
+
 }
 
-.meter {
-    height: 22px;
-    width: 100%;
-    background: #111;
-    margin: 25px auto;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid #00ffcc;
+.password-wrapper input:focus{
+
+box-shadow:0 0 10px rgba(157,78,221,0.7);
+
 }
 
-.strength-bar {
-    height: 100%;
-    width: 0%;
-    transition: 0.5s ease-in-out;
+/* toggle */
+
+.toggle{
+
+position:absolute;
+right:12px;
+top:10px;
+
+cursor:pointer;
+font-size:18px;
+color:#00aaff;
+
 }
 
-.rating {
-    font-size: 18px;
-    margin-top: 10px;
-    font-weight: bold;
+/* meter */
+
+.meter{
+
+height:20px;
+width:100%;
+
+background:#111;
+
+margin:25px auto;
+
+border-radius:10px;
+
+overflow:hidden;
+
+border:1px solid #00aaff;
+
 }
 
-.output {
-    margin-top: 20px;
-    padding: 15px;
-    background: rgba(20,20,20,0.9);
-    border-radius: 10px;
-    text-align: left;
-    font-size: 14px;
-    line-height: 1.6;
+.strength-bar{
+
+height:100%;
+width:0%;
+
+background:linear-gradient(90deg,#9d4edd,#00aaff);
+
+transition:0.5s ease;
+
 }
+
+/* rating */
+
+.rating{
+
+font-size:18px;
+margin-top:10px;
+font-weight:500;
+
+color:#00aaff;
+
+}
+
+/* result box */
+
+.output{
+
+margin-top:20px;
+padding:18px;
+
+background:rgba(20,20,20,0.9);
+
+border-radius:12px;
+
+text-align:left;
+font-size:14px;
+line-height:1.7;
+
+border:1px solid rgba(157,78,221,0.3);
+
+box-shadow:0 0 10px rgba(0,170,255,0.2);
+
+}
+
+/* responsive */
+
+@media(max-width:480px){
+
+.container{
+padding:25px;
+}
+
+h1{
+font-size:20px;
+}
+
+}
+
 </style>
+
 </head>
 
 <body>
 
 <div class="container">
-<div class="card">
 
-<h1>PASSWORD SECURITY ANALYZER</h1>
+<h1>PASSWORD ANALYZER</h1>
 
 <div class="password-wrapper">
-    <input type="password" id="password" placeholder="Enter Password" oninput="analyze()">
-    <span class="toggle" onclick="togglePassword()">👁</span>
+
+<input type="password" id="password" placeholder="Enter Password" oninput="analyze()">
+
+<span class="toggle" onclick="togglePassword()">👁</span>
+
 </div>
 
 <div class="meter">
-    <div class="strength-bar" id="bar"></div>
+<div class="strength-bar" id="bar"></div>
 </div>
 
 <div class="rating" id="rating"></div>
 
-<div class="output" id="result"></div>
+<div class="output" id="result">
+
+Enter a password to analyze its security strength.
 
 </div>
+
 </div>
+
 
 <script>
 
-function togglePassword() {
-    const input = document.getElementById("password");
-    const toggle = document.querySelector(".toggle");
+/* show / hide password */
 
-    if (input.type === "password") {
-        input.type = "text";
-        toggle.textContent = "🙈";
-    } else {
-        input.type = "password";
-        toggle.textContent = "👁";
-    }
+function togglePassword(){
+
+const input=document.getElementById("password");
+const toggle=document.querySelector(".toggle");
+
+if(input.type==="password"){
+
+input.type="text";
+toggle.textContent="🙈";
+
+}
+else{
+
+input.type="password";
+toggle.textContent="👁";
+
 }
 
-function calculateEntropy(password) {
-    let charset = 0;
-    if (/[a-z]/.test(password)) charset += 26;
-    if (/[A-Z]/.test(password)) charset += 26;
-    if (/[0-9]/.test(password)) charset += 10;
-    if (/[^a-zA-Z0-9]/.test(password)) charset += 32;
-    if (charset === 0) return 0;
-    return Math.round(password.length * Math.log2(charset));
 }
 
-function evaluatePassword(password) {
-    let score = 0;
-    if (password.length >= 8) score++;
-    if (/[A-Z]/.test(password)) score++;
-    if (/[a-z]/.test(password)) score++;
-    if (/[0-9]/.test(password)) score++;
-    if (/[^a-zA-Z0-9]/.test(password)) score++;
-    return score;
+/* entropy calculation */
+
+function calculateEntropy(password){
+
+let charset=0;
+
+if(/[a-z]/.test(password)) charset+=26;
+if(/[A-Z]/.test(password)) charset+=26;
+if(/[0-9]/.test(password)) charset+=10;
+if(/[^a-zA-Z0-9]/.test(password)) charset+=32;
+
+if(charset===0) return 0;
+
+return Math.round(password.length*Math.log2(charset));
+
 }
 
-function analyze() {
+/* password evaluation */
 
-    let password = document.getElementById("password").value;
-    let score = evaluatePassword(password);
-    let entropy = calculateEntropy(password);
+function evaluatePassword(password){
 
-    let bar = document.getElementById("bar");
-    let rating = document.getElementById("rating");
-    let result = document.getElementById("result");
+let score=0;
 
-    bar.style.width = (score * 20) + "%";
+if(password.length>=8) score++;
+if(/[A-Z]/.test(password)) score++;
+if(/[a-z]/.test(password)) score++;
+if(/[0-9]/.test(password)) score++;
+if(/[^a-zA-Z0-9]/.test(password)) score++;
 
-    let color, status;
-    let suggestions = [];
+return score;
 
-    if (score <= 1) {
-        color = "#ff0033";
-        status = "VERY WEAK";
-    } 
-    else if (score == 2) {
-        color = "#ff6600";
-        status = "WEAK";
-    }
-    else if (score == 3) {
-        color = "#ffcc00";
-        status = "MEDIUM";
-    }
-    else if (score == 4) {
-        color = "#66ff33";
-        status = "STRONG";
-    }
-    else {
-        color = "#00ffcc";
-        status = "VERY STRONG";
-    }
+}
 
-    bar.style.background = color;
-    rating.innerHTML = `Strength: ${status} (${score}/5)`;
+/* main analyzer */
 
-    if (password.length < 12)
-        suggestions.push("Increase length to at least 12 characters.");
-    if (!/[A-Z]/.test(password))
-        suggestions.push("Add uppercase letters.");
-    if (!/[a-z]/.test(password))
-        suggestions.push("Add lowercase letters.");
-    if (!/[0-9]/.test(password))
-        suggestions.push("Include numbers.");
-    if (!/[^a-zA-Z0-9]/.test(password))
-        suggestions.push("Use special characters (!@#$%).");
-    if (/123|password|admin|qwerty/i.test(password))
-        suggestions.push("Avoid common words or predictable patterns.");
+function analyze(){
 
-    let risk;
-    if (score <= 2) {
-        risk = "High risk: Easily cracked using dictionary or brute-force tools.";
-    } else if (score == 3) {
-        risk = "Moderate risk: Can resist simple attacks but vulnerable to advanced cracking.";
-    } else {
-        risk = "Low risk: Strong resistance against common password attacks.";
-    }
+let password=document.getElementById("password").value;
 
-    result.innerHTML = `
-        Entropy: ${entropy} bits <br><br>
-        Risk Analysis: ${risk} <br><br>
-        Recommendations:<br>
-        ${password.length === 0 ? "• Enter a password to analyze." :
-        suggestions.length ? suggestions.map(s => "• " + s).join("<br>") :
-        "• No major weaknesses detected."}
-    `;
+let score=evaluatePassword(password);
+let entropy=calculateEntropy(password);
+
+let bar=document.getElementById("bar");
+let rating=document.getElementById("rating");
+let result=document.getElementById("result");
+
+bar.style.width=(score*20)+"%";
+
+let color,status;
+
+let suggestions=[];
+
+if(score<=1){
+
+color="#ff0033";
+status="VERY WEAK";
+
+}
+
+else if(score==2){
+
+color="#ff6600";
+status="WEAK";
+
+}
+
+else if(score==3){
+
+color="#ffcc00";
+status="MEDIUM";
+
+}
+
+else if(score==4){
+
+color="#66ff33";
+status="STRONG";
+
+}
+
+else{
+
+color="#9d4edd";
+status="VERY STRONG";
+
+}
+
+bar.style.background=color;
+
+rating.innerHTML=`Strength: ${status} (${score}/5)`;
+
+/* suggestions */
+
+if(password.length<12)
+suggestions.push("Increase length to at least 12 characters.");
+
+if(!/[A-Z]/.test(password))
+suggestions.push("Add uppercase letters.");
+
+if(!/[a-z]/.test(password))
+suggestions.push("Add lowercase letters.");
+
+if(!/[0-9]/.test(password))
+suggestions.push("Include numbers.");
+
+if(!/[^a-zA-Z0-9]/.test(password))
+suggestions.push("Use special characters (!@#$%).");
+
+if(/123|password|admin|qwerty/i.test(password))
+suggestions.push("Avoid common words or predictable patterns.");
+
+/* risk analysis */
+
+let risk;
+
+if(score<=2){
+
+risk="High risk: Easily cracked using dictionary or brute-force tools.";
+
+}
+
+else if(score==3){
+
+risk="Moderate risk: Can resist simple attacks but vulnerable to advanced cracking.";
+
+}
+
+else{
+
+risk="Low risk: Strong resistance against common password attacks.";
+
+}
+
+/* output */
+
+result.innerHTML=
+
+`Entropy: ${entropy} bits <br><br>
+Risk Analysis: ${risk} <br><br>
+Recommendations:<br>
+${password.length===0 ?
+"• Enter a password to analyze." :
+suggestions.length ?
+suggestions.map(s=>"• "+s).join("<br>") :
+"• No major weaknesses detected."}`;
+
 }
 
 </script>
